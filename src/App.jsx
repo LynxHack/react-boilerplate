@@ -7,6 +7,7 @@ import {generateRandomId} from './generaterandomid.jsx'
 class App extends Component {
   constructor(){
     super();
+    this.socket = new WebSocket('ws://localhost:3001', 'protocolOne');
     this.state={
       currentUser : 'Bob',
       messages: [
@@ -23,25 +24,23 @@ class App extends Component {
       ]
     }
   }
-
-  // componentDidMount() {
-  //   console.log("componentDidMount <App />");
-  //   setTimeout(() => {
-  //     console.log("Simulating incoming message");
-  //     // Add a new message to the list of messages in the data store
-  //     const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-  //     const messages = this.state.messages.concat(newMessage)
-  //     // Update the state of the app component.
-  //     // Calling setState will trigger a call to render() in App and all child components.
-  //     this.setState({messages: messages})
-  //   }, 3000);
-  // }
+  
+  componentDidMount(){
+    this.socket.onopen = (event) => {
+      console.log('Connected to socket!');
+      this.socket.send('client sends ok for initalization!');
+    }
+    this.socket.onmessage = function (data) {
+      console.log(data);
+    };
+  }
 
   addmessage2list(newMessage){
     console.log(newMessage);
     newMessage['id'] = generateRandomId()(); 
     const messages = this.state.messages.concat(newMessage)
     this.setState({messages: messages})
+    this.socket.send(JSON.stringify(newMessage));
   }
 
     render() {
@@ -57,3 +56,17 @@ class App extends Component {
   }
 }
 export default App;
+
+
+  // componentDidMount() {
+  //   console.log("componentDidMount <App />");
+  //   setTimeout(() => {
+  //     console.log("Simulating incoming message");
+  //     // Add a new message to the list of messages in the data store
+  //     const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
+  //     const messages = this.state.messages.concat(newMessage)
+  //     // Update the state of the app component.
+  //     // Calling setState will trigger a call to render() in App and all child components.
+  //     this.setState({messages: messages})
+  //   }, 3000);
+  // }

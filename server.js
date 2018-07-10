@@ -12,13 +12,13 @@ new WebpackDevServer(webpack(config), {
       ignored: /node_modules/
     }
   })
-  .listen(3000, '0.0.0.0', function (err, result) {
-    if (err) {
-      console.log(err);
-    }
+.listen(3000, '0.0.0.0', function (err, result) {
+  if (err) {
+    console.log(err);
+  }
 
-    console.log('Running at http://0.0.0.0:3000');
-  });
+  console.log('Running at http://0.0.0.0:3000');
+});
 
 // Set the port to 3001
 const PORT = 3001;
@@ -37,7 +37,12 @@ const wss = new SocketServer({ server });
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
   console.log('Client connected');
-
+  
+  ws.on('message', function incoming(data) {
+    console.log(data);
+  });
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => console.log('Client disconnected'));
 });
+
+
