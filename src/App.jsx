@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
+const uuidv4 = require('uuid/v4');
 
 class App extends Component {
   constructor(){
@@ -10,7 +11,6 @@ class App extends Component {
     this.state={
       currentUser : 'Bob',
       messages: [],
-      namechangemessages: [],
       numberofusers: 0,
       color: '#000000'
     }
@@ -32,9 +32,6 @@ class App extends Component {
         case 'incomingNotification':
           const test = this.state.messages.concat(newmessage)
           this.setState({messages: test})
-          //let test = this.state.namechangemessages;
-          //test.push(`${newmessage.originaluser} changed their name to ${newmessage.newuser}`);
-          //this.setState({namechangemessages: test});
         break;
 
         case 'numusers':
