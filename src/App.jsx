@@ -1,22 +1,23 @@
 import React, {Component} from 'react';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
-import {generateRandomId} from './generaterandomid.jsx'
-
 
 class App extends Component {
   constructor(){
     super();
+    this.colors = ['#3fc6ae', '#bc0f0f', '#2243c9', '#1fc443']
     this.socket = new WebSocket('ws://localhost:3001', 'protocolOne');
     this.state={
       currentUser : 'Bob',
       messages: [],
       namechangemessages: [],
-      numberofusers: 0
+      numberofusers: 0,
+      color: '#000000'
     }
   }
   
   componentDidMount(){
+    this.setState({color: this.colors[Math.floor(Math.random()*4)]});
     this.socket.onopen = (event) => {
       console.log('Connected to socket!');
     }
@@ -63,14 +64,12 @@ class App extends Component {
   }
   
   notifynumusers(numusers){
-    console.log(numusers);
     return (
       <div style={{position: 'relative', float: 'right', top: '20px'}}>{numusers} users online</div>
     )
   }
 
   handlenotifications(notification){
-    console.log("came in here");
     return (
       <span className="notification-content">{notification}</span>
     );
@@ -83,7 +82,7 @@ class App extends Component {
         <a href="/" className="navbar-brand">Chatty</a>
         {this.notifynumusers(this.state.numberofusers)}
       </nav>
-      <MessageList messages={this.state.messages}/>
+      <MessageList messages={this.state.messages} color={this.state.color}/>
       <div className="notification">
       {this.handlenotifications(this.state.namechangemessages)}
       </div>
@@ -93,17 +92,3 @@ class App extends Component {
   }
 }
 export default App;
-
-
-  // componentDidMount() {
-  //   console.log("componentDidMount <App />");
-  //   setTimeout(() => {
-  //     console.log("Simulating incoming message");
-  //     // Add a new message to the list of messages in the data store
-  //     const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-  //     const messages = this.state.messages.concat(newMessage)
-  //     // Update the state of the app component.
-  //     // Calling setState will trigger a call to render() in App and all child components.
-  //     this.setState({messages: messages})
-  //   }, 3000);
-  // }
