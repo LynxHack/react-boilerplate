@@ -30,9 +30,11 @@ class App extends Component {
         break;
 
         case 'incomingNotification':
-          let test = this.state.namechangemessages;
-          test.push(`${newmessage.originaluser} changed their name to ${newmessage.newuser}`);
-          this.setState({namechangemessages: test});
+          const test = this.state.messages.concat(newmessage)
+          this.setState({messages: test})
+          //let test = this.state.namechangemessages;
+          //test.push(`${newmessage.originaluser} changed their name to ${newmessage.newuser}`);
+          //this.setState({namechangemessages: test});
         break;
 
         case 'numusers':

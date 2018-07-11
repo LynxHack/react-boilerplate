@@ -10,9 +10,16 @@ class MessageList extends Component {
     }
 
     generateMessages(messagelist, color){
-        const fullmessages = messagelist.map(message => 
-            (<Message key={message.id} username={message.username} content={message.content} color={color}/>)
-        );
+        const fullmessages = messagelist.map(message => {
+            if(message.type==='incomingNotification'){
+                return (
+                <div key={message.id} className="message system">
+                    {message.originaluser} changed their name to {message.newuser}
+                </div>
+                )
+            }
+            return (<Message key={message.id} username={message.username} content={message.content} color={color}/>)
+        });
         return fullmessages;
     }
 
@@ -21,9 +28,7 @@ class MessageList extends Component {
         return(    
         <main className="messages">
         {this.generateMessages(this.props.messages, this.props.color)}
-        {/* <div className="message system">
-            Anonymous1 changed their name to nomnom.
-        </div> */}
+
         </main>);
     }
 }

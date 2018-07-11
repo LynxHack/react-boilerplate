@@ -66,6 +66,7 @@ wss.on('connection', (ws) => {
       case 'postNotification':
         console.log(newmessage.originaluser + " changed their name to" + newmessage.newuser);
         let newnotification = newmessage;
+        newnotification['id'] = uuidv4();
         newnotification['type'] = 'incomingNotification';
         wss.broadcast(JSON.stringify(newnotification));
       break;
