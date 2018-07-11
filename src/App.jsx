@@ -10,18 +10,9 @@ class App extends Component {
     this.socket = new WebSocket('ws://localhost:3001', 'protocolOne');
     this.state={
       currentUser : 'Bob',
-      messages: [
-        // {
-        //   username: 'Bob',
-        //   content: 'Has anyone seen my marbles?',
-        //   id: generateRandomId()()
-        // },
-        // {
-        //   username: 'Anonymous',
-        //   content: 'No, I think you lost them. You lost your marbles Bob. You lost them for good.',
-        //   id: generateRandomId()()
-        // }
-      ]
+      messages: [],
+      namechangemessages: [],
+      numberofusers: 0
     }
   }
   
@@ -31,8 +22,27 @@ class App extends Component {
     }
     this.socket.onmessage = (event) => {
       let newmessage = JSON.parse(event.data);
-      const messages = this.state.messages.concat(newmessage)
-      this.setState({messages: messages})
+      switch(newmessage.type){
+        case 'incomingMessage':
+          const messages = this.state.messages.concat(newmessage)
+          this.setState({messages: messages})
+        break;
+
+        case 'incomingNotification':
+          let test = this.state.namechangemessages;
+          test.push(`${newmessage.originaluser} changed their name to ${newmessage.newuser}`);
+          this.setState({namechangemessages: test});
+        break;
+
+        case 'numusers':
+          console.log('Number of users now: ' + newmessage.numusers);
+          this.setState({numberofusers: newmessage.numusers});
+        break;
+
+        default:
+          throw new Error('No corresponding message type found on client end');
+      }
+
     }
   }
 
@@ -52,13 +62,31 @@ class App extends Component {
     }
   }
   
+  notifynumusers(numusers){
+    console.log(numusers);
+    return (
+      <div style={{position: 'relative', float: 'right', top: '20px'}}>{numusers} users online</div>
+    )
+  }
+
+  handlenotifications(notification){
+    console.log("came in here");
+    return (
+      <span className="notification-content">{notification}</span>
+    );
+  }
+
   render() {
     return (
       <div>
       <nav className="navbar">
         <a href="/" className="navbar-brand">Chatty</a>
+        {this.notifynumusers(this.state.numberofusers)}
       </nav>
       <MessageList messages={this.state.messages}/>
+      <div className="notification">
+      {this.handlenotifications(this.state.namechangemessages)}
+      </div>
       <ChatBar currentUser={this.state.currentUser} changecurrentuser={this.changecurrentuser.bind(this)} addmessage2list={this.addmessage2list.bind(this)}/>
     </div>
     );

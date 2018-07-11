@@ -47,9 +47,12 @@ wss.broadcast = function broadcast(data) {
   //});
 };
 
+var numusers = 0;
 
 wss.on('connection', (ws) => {
-  console.log('Client connected');
+  numusers++;
+  console.log('Client connected: Now there are ' + numusers + ' users');
+  wss.broadcast(JSON.stringify({type: 'numusers', numusers: numusers}));
   ws.on('message', function incoming(data) {
     let newmessage = JSON.parse(data);
     switch(newmessage.type){
@@ -62,6 +65,9 @@ wss.on('connection', (ws) => {
 
       case 'postNotification':
         console.log(newmessage.originaluser + " changed their name to" + newmessage.newuser);
+        let newnotification = newmessage;
+        newnotification['type'] = 'incomingNotification';
+        wss.broadcast(JSON.stringify(newnotification));
       break;
 
       default:
@@ -69,7 +75,11 @@ wss.on('connection', (ws) => {
     }
   });
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
-  ws.on('close', () => console.log('Client disconnected'));
+  ws.on('close', () => {
+    numusers--; 
+    console.log('Client disconnected. Now there are ' + numusers + ' users'); 
+    wss.broadcast(JSON.stringify({type: 'numusers', numusers: numusers}));
+  });
 });
 
 
