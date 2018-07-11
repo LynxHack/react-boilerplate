@@ -9,7 +9,7 @@ class App extends Component {
     this.colors = ['#3fc6ae', '#bc0f0f', '#2243c9', '#1fc443']
     this.socket = new WebSocket('ws://localhost:3001', 'protocolOne');
     this.state={
-      currentUser : 'Bob',
+      currentUser : 'Anonymous',
       messages: [],
       numberofusers: 0,
       color: '#000000'
