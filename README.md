@@ -18,9 +18,9 @@ git remote add origin [YOUR NEW REPOSITORY]
 Install the dependencies and start the server.
 
 ```
-npm install
-npm start
-open http://localhost:3000
+'npm install'
+'npm start' in main directory to open http://localhost:3000 for main server port
+'npm start' in the chatter-server directory to open 3001 port for the client communication
 ```
 
 ### Linting
